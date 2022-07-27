@@ -1,0 +1,502 @@
+@import 'resources.scss';
+// * {
+//     outline: 1px solid white;
+// }
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Radio Canada';
+    color: white;
+    background-color: $dark;
+    height: 100vh;
+}
+
+@mixin custom-scrollbar {
+
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: darken($color: $dark, $amount: 5%);
+    }
+
+    &:hover::-webkit-scrollbar {
+        display: block;
+    }
+
+    &::-webkit-scrollbar {
+        width: 10px;
+        display: none;
+        background-color: darken($color: $dark, $amount: 5%);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $main-linear;
+        background-image: $main-linear
+    }
+
+}
+
+.main-container {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    margin: 0;
+
+    &.blur-out::after {
+        content: '';
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #121926;
+        opacity: 0.5;
+    }
+
+    .messages-container {
+        grid-column: 2/3;
+        grid-row: 2/3;
+        margin: 10px 10px 0 0;
+        padding-right: 10px;
+        max-height: 100%;
+        overflow-y: auto;
+        @include custom-scrollbar;
+    }
+
+    .users-container {
+        grid-column: 1/2;
+        grid-row: 2/4;
+        max-height: 100%;
+        overflow-y: auto;
+        @include custom-scrollbar;
+    }
+
+    .profile-info {
+        grid-column: 3/4;
+        grid-row: 1/4;
+    }
+
+    .search-bar {
+        grid-column: 1/2;
+        grid-row: 1/2;
+        align-self: stretch;
+        justify-self: stretch;
+        background-color: darken($color: $dark, $amount: 5%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .message-typing-area {
+        grid-row: 3/4;
+        grid-column: 2/3;
+    }
+}
+
+.profile-pic {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-pic-container {
+    position: relative;
+    align-self: center;
+
+    &.small {
+        .profile-pic {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
+
+    &.super-small {
+        .profile-pic {
+            width: 1rem;
+            height: 1rem;
+        }
+    }
+}
+
+.connected .profile-pic-container::after {
+    content: '';
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    bottom: 0;
+    right: 0;
+    background-color: rgb(104, 200, 2);
+    border: 2px solid white;
+}
+
+
+.profile-pic-container.super-small::after {
+    display: none;
+}
+
+
+.profile-pic-container.small::after {
+
+    width: 8px;
+    height: 8px;
+    border-width: 1px;
+}
+
+.active-status {
+    color: rgb(104, 200, 2);
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.time {
+    text-align: right;
+    font-weight: lighter;
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.unread-count {
+    text-align: center;
+    margin: 10px 0;
+    padding: 3px;
+    border-radius: 50%;
+    background: $main-linear;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+}
+
+@keyframes useranim {
+    0% {
+        background-position-x: 100%;
+    }
+
+    100% {
+        background-position-x: 0%;
+    }
+}
+
+
+@keyframes useranimrev {
+    0% {
+        background-position-x: 0%;
+    }
+
+    100% {
+        background-position-x: 100%;
+    }
+}
+
+
+.user-abstract {
+    $padding: 20px;
+    background-image: linear-gradient(45deg, #ea2e5a, #8025d0, #1e2330, #121926);
+    background-size: 400% 400%;
+    background-position-x: 100%;
+    display: flex;
+    padding: $padding;
+    gap: $padding;
+    border-radius: 5px;
+    align-items: center;
+    margin: 10px 0;
+    animation-name: useranimrev;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    &.active {
+        animation-name: useranim;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .time-unread-count-container {
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: fit-content;
+    }
+
+    .info {
+        justify-self: stretch;
+        flex: auto;
+
+        .last-message {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    }
+}
+
+.message-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    padding: 3px;
+    margin: 0;
+    justify-items: flex-start;
+
+    .message-content {
+        grid-row: 1/2;
+        grid-column: 2/3;
+
+        display: flex;
+        gap: 5px;
+        align-items: center;
+
+        .status-icon {
+            width: 15px;
+            height: 15px;
+
+            path {
+                fill: $main-1;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    .content {
+        grid-column: 1/2;
+        grid-row: 1/2;
+        padding: 15px 20px;
+        margin: 0;
+        background: $color-1;
+    }
+
+    .time {
+        grid-column: 2/3;
+    }
+
+    &.right-side {
+        justify-items: flex-end;
+        grid-template-columns: 1fr auto;
+
+        .message-content {
+            grid-column: 1 / 2;
+            flex-direction: row-reverse;
+        }
+
+        .profile-pic-container {
+            grid-column: 2 / 3;
+        }
+
+        .time {
+            grid-column: 1/2;
+        }
+    }
+
+}
+
+
+.users-container {
+    margin: 0 10px 0 20px;
+    padding-right: 10px;
+}
+
+.search-container {
+    cursor: text;
+    padding: 0 20px;
+    gap: 10px;
+    display: flex;
+    position: relative;
+    border-radius: 5px;
+    justify-items: center;
+    align-items: center;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 47px;
+        width: 1px;
+        height: 30%;
+        opacity: 50%;
+        transform: translateY(-50%);
+        background-color: $light;
+    }
+
+    input {
+        font-family: 'Radio Canada';
+        font-size: 1em;
+        background-color: transparent;
+        width: 100%;
+        border: none;
+        color: white;
+        outline: none;
+        padding: 20px 20px 20px 10px;
+
+        &::placeholder {
+            color: $light;
+            opacity: 50%;
+        }
+    }
+
+    .search-icon {
+        padding: 0 10px 0 0;
+        opacity: 50%;
+        width: 20px;
+
+        path {
+            fill: $light;
+        }
+    }
+
+}
+
+.profile-info {
+    background-color: darken($color: $dark, $amount: 8%);
+    text-align: center;
+    padding: 20px;
+
+    h4 {
+        margin: 20px;
+        font-family: 'Radio Canada';
+        font-weight: lighter;
+    }
+
+    .pic {
+        width: 7em;
+        height: 7em;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .name {
+        margin: 0;
+    }
+
+    .attachements {
+        text-align: left;
+        display: grid;
+        gap: 10px;
+        margin: 20px 0;
+        align-items: flex-end;
+        grid-template-columns: 1fr auto;
+
+        .attachement-count {
+            display: inline-block;
+            margin: 0;
+            font-size: 0.9em;
+            padding: 3px;
+            border-radius: 50%;
+            background: $main-linear;
+            width: 1.2em;
+            height: 1.2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .attachements-container {
+        grid-column: 1 / 3;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px;
+
+        img {
+            width: 5em;
+            height: 5em;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    }
+}
+
+.messages-header {
+    grid-column: 2/3;
+    background-color: darken($color: $dark, $amount: 5%);
+    padding: 20px;
+    margin: 0;
+    margin-left: 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .info {
+        margin: 0;
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+.message-typing-area {
+    padding: 0;
+    background: linear-gradient(90deg, $dark, darken($color: $dark, $amount: 5%));
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+    justify-items: flex-end;
+    border-top: 1px solid #fff1;
+
+    path {
+        fill: $light;
+    }
+
+    .icon.attachement {
+        margin: 0 15px;
+    }
+
+    input {
+        border: none;
+        padding: 20px;
+        background-color: transparent;
+        font-family: 'Radio Canada';
+        font-size: 1em;
+        color: $light;
+        outline: none;
+        min-width: 0;
+        width: 100%;
+
+        &::placeholder {
+            color: $light;
+            opacity: 50%;
+        }
+    }
+}
+
+.send-button {
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.bg-danger {
+    background-color: #ea2e5a;
+}
+
+.bg-success {
+    background-color: #2eea80;
+}
+
+.bg-warning {
+    color: $dark;
+    background-color: #f8e411;
+}
+
+.message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1;
+}

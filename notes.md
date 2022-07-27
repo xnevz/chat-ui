@@ -1,0 +1,5 @@
+- When hovering over the 'seen' text a tooltip should show indicating the time the message was seen.
+- turn all alerts to UI alerts.
+- fix no friends and no messages UI display (no friends ...)
+- click away not hiding header menu.
+- handle sound effects.
